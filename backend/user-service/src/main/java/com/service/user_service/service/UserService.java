@@ -28,7 +28,7 @@ public class UserService {
         // Gửi 1 message sang Notification Service => Xác nhận đăng ký
         // Format: "toEmail|subject|content"
         String msg = user.getEmail() + "|Đăng ký thành công|Chào mừng " + user.getName();
-        amqpTemplate.convertAndSend("hotelExchange", "notification.email", msg);
+        amqpTemplate.convertAndSend("libraryExchange", "notification.email", msg);
 
         return user;
     }
