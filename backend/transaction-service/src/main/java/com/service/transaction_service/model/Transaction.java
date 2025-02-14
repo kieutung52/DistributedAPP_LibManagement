@@ -23,19 +23,19 @@ public class Transaction {
     private String dueDate; // dd-mm-yyyy
 
     @Column(name = "status")
-    private String status; // "PENDDING", "ACCEPT", "CANCLED"
+    private String status; // "PENDING", "ACCEPT", "CANCELED"
 
     @Column(name = "borrowstatus")
-    private String borrowStatus; // "NONE", "ON_TIME", "DUE", "OVER_DUE"
+    private String borrowStatus; // "NONE", "ON_TIME", "DUE", "OVER_DUE", "RETURNED"
 
     public Transaction() {}
 
-    public Transaction(int userId, int bookId, String startDate, String dueDate, String status) {
+    public Transaction(int userId, int bookId, String startDate, String dueDate) {
         this.userId = userId;
         this.bookId = bookId;
         this.startDate = startDate;
         this.dueDate = dueDate;
-        this.status = status;
+        this.status = "PENDING";
         this.borrowStatus = "NONE";
     }
 

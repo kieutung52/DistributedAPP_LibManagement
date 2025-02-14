@@ -70,6 +70,16 @@ public class TransactionController {
         }
     }
 
+    @PutMapping("/{id}/returnbook")
+    public ResponseEntity<?> returnBook(@PathVariable int id) {
+        try {
+            Transaction b = transactionService.returnBook(id);
+            return ResponseEntity.ok(b);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> updateStatusCancel(@PathVariable int id) {
         try {
