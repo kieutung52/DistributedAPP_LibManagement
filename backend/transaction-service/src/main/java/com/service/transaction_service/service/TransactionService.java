@@ -70,8 +70,8 @@ public class TransactionService {
         temp.setBorrowStatus("RETURNED");
         transactionRepository.save(temp);
         String bookMsg = temp.getBookId() + "|" + "Up";
-        String notiMsg = temp.getUserId() + "|Returned";
-        amqpTemplate.convertAndSend("libraryExchange","user.notiReturnBook",notiMsg);
+        String userMsg = temp.getUserId() + "";
+        amqpTemplate.convertAndSend("libraryExchange","user.notiReturnBook",userMsg);
         amqpTemplate.convertAndSend("libraryExchange","book.updateQuantity",bookMsg);
         return temp;
     }
