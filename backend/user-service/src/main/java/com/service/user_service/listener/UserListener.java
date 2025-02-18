@@ -31,6 +31,8 @@ public class UserListener {
                 notiMsg += "The book borrowing request has been canceled";
             } else if (routingKey.equals("user.notiCreated")) {
                 notiMsg += "The book borrowing request has been created";
+            } else if (routingKey.equals("user.notiReturnBook")) {
+                notiMsg += "The book has been returned. Thanks for use our services";
             }
             amqpTemplate.convertAndSend("libraryExchange","notification.bookBorrowRequest",notiMsg);
         } catch (Exception e) {
