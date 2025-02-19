@@ -8,7 +8,6 @@ const CreateBookForm = ({ onBookCreated, onClose, setCreateError }) => {
   const [publisher, setPublisher] = useState('');
   const [year, setYear] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +16,12 @@ const CreateBookForm = ({ onBookCreated, onClose, setCreateError }) => {
       onBookCreated(newBook);
       onClose();
     } catch (err) {
-      setCreateError("Failed to create book: " + error.message);
+      setCreateError("Failed to create book: " + err.message);
     }
   };
 
   return (
     <>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className='flex justify-between'>
           <h2 className="text-xl font-bold">Create Book</h2>

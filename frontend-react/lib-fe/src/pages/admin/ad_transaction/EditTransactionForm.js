@@ -8,7 +8,6 @@ const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose, setCr
   const [dueDate, setDueDate] = useState('');
   const [status, setStatus] = useState('');
   const [borrowStatus, setBorrowStatus] = useState('');
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (transaction) {
@@ -28,13 +27,12 @@ const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose, setCr
       onTransactionUpdated(updateTransaction);
       onClose();
     }catch(err){
-      setCreateError("Failed to edit transaction: " + error.message);
+      setCreateError("Failed to edit transaction: " + err.message);
     }
   };
 
   return (
     <>
-    {error && <div className='text-red-500'>{error}</div>}
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className='flex justify-between'>
         <h2 className='text-xl font-bold'>Edit Transaction</h2>
@@ -61,20 +59,19 @@ const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose, setCr
       <div>
         <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status:</label>
         <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-          <option value="returned">Returned</option>
+          <option value="PENDING">Pending</option>
+          <option value="ACCEPT">Accept</option>
+          <option value="CANCELED">Canceled</option>
         </select>
       </div>
         <div>
         <label htmlFor='borrowStatus' className="block text-sm font-medium text-gray-700">Borrow Status</label>
         <select id="borrowStatus" value={borrowStatus} onChange={(e) => setBorrowStatus(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-          <option value="pending">Pending</option>
-          <option value="borrowing">Borrowing</option>
-          <option value="returned">Returned</option>
-          <option value="overdue">Overdue</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="NONE">None</option>
+          <option value="ON_TIME">On_time</option>
+          <option value="DUE">Due</option>
+          <option value="OVER_DUE">Over_due</option>
+          <option value="RETURNED">Returned</option>
         </select>
       </div>
       <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Transaction</button>

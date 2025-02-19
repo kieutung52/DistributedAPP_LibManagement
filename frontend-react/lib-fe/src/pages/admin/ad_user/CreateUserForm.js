@@ -7,23 +7,20 @@ const CreateUserForm = ({ onUserCreated, onClose, setCreateError }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     try {
       const newUser = await createUser(username, password, name, address, email);
       onUserCreated(newUser);
       onClose();
     } catch (err) {
-      setCreateError("Failed to create user: " + error.message);
+      setCreateError("Failed to create user: " + err.message);
     }
   };
 
   return (
     <>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className='flex justify-between'>
           <h2 className="text-xl font-bold">Create User</h2>

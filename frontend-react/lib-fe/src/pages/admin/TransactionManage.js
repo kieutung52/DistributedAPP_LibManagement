@@ -100,7 +100,7 @@ const TransactionManage = () => {
       case 'OVER_DUE':
         return 'bg-red-200 text-red-800';
       case 'RETURNED':
-        return 'bg-gray-200 text-gray-800';
+        return 'bg-gray-700 text-white';
       default:
         return 'bg-gray-100 text-gray-700';
     }

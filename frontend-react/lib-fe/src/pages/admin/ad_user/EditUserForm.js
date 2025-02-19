@@ -6,7 +6,6 @@ const EditUserForm = ({ user, onUserUpdated, onClose, setCreateError }) => {
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -24,13 +23,12 @@ const EditUserForm = ({ user, onUserUpdated, onClose, setCreateError }) => {
       onUserUpdated(updatedUser);
       onClose();
     } catch (err) {
-      setCreateError("Failed to edit transaction: " + error.message);
+      setCreateError("Failed to edit transaction: " + err.message);
     }
   };
 
   return (
     <>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className='flex justify-between'>
           <h2 className="text-xl font-bold">Edit User</h2>
