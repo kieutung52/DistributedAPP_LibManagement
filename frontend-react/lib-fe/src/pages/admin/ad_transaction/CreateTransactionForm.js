@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createTransaction } from '../../../apis/TransactionApi';
 
-const CreateTransactionForm = ({ onTransactionCreated, onClose }) => {
+const CreateTransactionForm = ({ onTransactionCreated, onClose, setCreateError }) => {
   const [userId, setUserId] = useState('');
   const [bookId, setBookId] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -17,7 +17,7 @@ const CreateTransactionForm = ({ onTransactionCreated, onClose }) => {
       onTransactionCreated(newTransaction);
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create transaction.");
+      setCreateError("Failed to create transaction: " + error.message);
     }
   };
 

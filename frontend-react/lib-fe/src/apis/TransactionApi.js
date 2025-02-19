@@ -1,89 +1,110 @@
 const GATEWAY_URL = "http://localhost:8081";
 
-export async function createTransaction(userId, bookId, startDate, dueDate, status, borrowStatus) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/create`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({userId, bookId, startDate, dueDate, status, borrowStatus})
-    });
+async function handleResponse(resp) {
     if (!resp.ok) {
-        throw new Error(await resp.text());
+      let errorMessage = "An unexpected error occurred.";
+      try {
+          const errorText = await resp.text();
+          errorMessage = errorText || errorMessage;
+      } catch (parseError) {
+      }
+      throw new Error(errorMessage);
     }
-    return await resp.json();
+    return resp.json();
+}
+
+export async function createTransaction(userId, bookId, startDate, dueDate, status, borrowStatus) {
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({userId, bookId, startDate, dueDate, status, borrowStatus})
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to create transaction: " + error.message);
+    }
 }
 
 export async function getAllTransaction() {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/all`, {
-        method: "GET"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/all`, {
+            method: "GET"
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to get all transaction: " + error.message);
     }
-    return await resp.json();
 }
 
 export async function getTransactionById(transactionId) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
-        method: "GET"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
+            method: "GET"
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to get transaction by ID: " + error.message);
     }
-    return await resp.json();
 }
 
 export async function editTransactionById(transactionId, userId, bookId, startDate, dueDate,  status, borrowStatus) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({userId, bookId, startDate, dueDate, status, borrowStatus})
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({userId, bookId, startDate, dueDate, status, borrowStatus})
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to edit transaction: " + error.message);
     }
-    return await resp.json();
 }
 
 export async function deleteTransactionById(transactionId) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
-        method: "DELETE"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}`, {
+            method: "DELETE"
+        });
+        return resp;
+    } catch (error) {
+        throw new Error("Failed to delete transaction: " + error.message);
     }
-    return resp;
 }
 
 export async function acceptTransaction(transactionId) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/accept`, {
-        method: "PUT"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/accept`, {
+            method: "PUT"
+        });
+        return resp;
+    } catch (error) {
+        throw new Error("Failed to accept transaction: " + error.message);
     }
-    return await resp;
 }
 
 export async function cancelTransaction(transactionId) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/cancel`, {
-        method: "PUT"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/cancel`, {
+            method: "PUT"
+        });
+        return resp;
+    } catch (error) {
+        throw new Error("Failed to cancel transaction: " + error.message);
     }
-    return await resp;
 }
 
 export async function returnBook(transactionId) {
-    const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/returnbook`, {
-        method: "PUT"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/transaction/${transactionId}/returnbook`, {
+            method: "PUT"
+        });
+        return resp;
+    } catch (error) {
+        throw new Error("Failed to return transaction: " + error.message);
     }
-    return await resp;
 }

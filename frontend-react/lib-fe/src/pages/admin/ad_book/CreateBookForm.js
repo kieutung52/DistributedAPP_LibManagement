@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createBook } from '../../../apis/BookApi';
 
-const CreateBookForm = ({ onBookCreated, onClose }) => {
+const CreateBookForm = ({ onBookCreated, onClose, setCreateError }) => {
   const [isbn, setIsbn] = useState('');
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -17,7 +17,7 @@ const CreateBookForm = ({ onBookCreated, onClose }) => {
       onBookCreated(newBook);
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create book.");
+      setCreateError("Failed to create book: " + error.message);
     }
   };
 

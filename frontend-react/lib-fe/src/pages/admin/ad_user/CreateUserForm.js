@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createUser } from '../../../apis/UserApi';
 
-const CreateUserForm = ({ onUserCreated, onClose }) => {
+const CreateUserForm = ({ onUserCreated, onClose, setCreateError }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -17,7 +17,7 @@ const CreateUserForm = ({ onUserCreated, onClose }) => {
       onUserCreated(newUser);
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to create user.");
+      setCreateError("Failed to create user: " + error.message);
     }
   };
 

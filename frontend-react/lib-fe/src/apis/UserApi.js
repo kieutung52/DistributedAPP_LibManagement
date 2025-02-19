@@ -1,73 +1,90 @@
 const GATEWAY_URL = "http://localhost:8081";
 
-export async function createUser(username, password, name, address, email) {
-    const resp = await fetch(`${GATEWAY_URL}/user/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, name, address, email})
-    });
+async function handleResponse(resp) {
     if (!resp.ok) {
-        throw new Error(await resp.text());
+      let errorMessage = "An unexpected error occurred.";
+      try {
+          const errorText = await resp.text();
+          errorMessage = errorText || errorMessage;
+      } catch (parseError) {
+      }
+      throw new Error(errorMessage);
     }
-    return await resp.json(); // output:{"status":"success","message":"Đăng ký thành công","data":{"id":5,"username":"testuser1","password":"05022004","name":"KT","address":"Ha Noi","email":"kieutungg@gmail.com","role":"user"}}
+    return resp.json();
+}
+
+export async function createUser(username, password, name, address, email) {
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password, name, address, email})
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to create user: " + error.message);
+    }
 }
 
 export async function loginUser(username, password) {
-    const resp = await fetch(`${GATEWAY_URL}/user/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to login: " + error.message);
     }
-    const data = await resp.json();
-    return data;
 }
 
 export async function getAllUser() {
-    const resp = await fetch(`${GATEWAY_URL}/user/all`, {
-        method: "GET"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/all`, {
+            method: "GET"
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to get all user: " + error.message);
     }
-    return await resp.json(); 
     /*output: [{"id":1,"username":"kieutung123","password":"05022004","name":"K.Tung","address":"Ha Noi","email":"kieutungg@gmail.com","role":"user"},{"id":2,"username":"kieutung","password":"05022004","name":"kieu_tung","address":"Ha noi","email":"kieutungg@gmail.com","role":"admin"},{"id":5,"username":"testuser1","password":"05022004","name":"KT","address":"Ha Noi","email":"kieutungg@gmail.com","role":"user"}] */
 }
 
 export async function getUserById(userId) {
-    const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
-        method: "GET"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
+            method: "GET"
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to get user by ID: " + error.message);
     }
-    return await resp.json(); // output:{"id":1,"username":"kieutung123","password":"05022004","name":"K.Tung","address":"Ha Noi","email":"kieutungg@gmail.com","role":"user"}
+    // output:{"id":1,"username":"kieutung123","password":"05022004","name":"K.Tung","address":"Ha Noi","email":"kieutungg@gmail.com","role":"user"}
 }
 
 export async function editUserById(userId, name, address, email, role) {
-
-    const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, address, email, role})
-    });
-
-    if (!resp.ok){
-        throw new Error(await resp.text());
-    }
-    return await resp.json();    
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, address, email, role})
+        });
+        return handleResponse(resp);
+    } catch (error) {
+        throw new Error("Failed to edit user: " + error.message);
+    }  
 }
 
 export async function deleteUserById(userId) {
-    const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
-        method: "DELETE"
-    });
-    if (!resp.ok) {
-        throw new Error(await resp.text());
+    try {
+        const resp = await fetch(`${GATEWAY_URL}/user/${userId}`, {
+            method: "DELETE"
+        });
+        return resp;
+    } catch (error) {
+        throw new Error("Failed to delete user: " + error.message);
     }
-    return resp; // Không cần .json()
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { editBookById } from '../../../apis/BookApi';
 
-const EditBookForm = ({ book, onBookUpdated, onClose }) => {
+const EditBookForm = ({ book, onBookUpdated, onClose, setCreateError }) => {
   const [isbn, setIsbn] = useState('');
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -28,7 +28,7 @@ const EditBookForm = ({ book, onBookUpdated, onClose }) => {
       onBookUpdated(updatedBook);
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to update book.");
+      setCreateError("Failed to edit book: " + error.message);
     }
   };
 

@@ -4,6 +4,7 @@ import CreateUserForm from './ad_user/CreateUserForm';
 import EditUserForm from './ad_user/EditUserForm';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import ErrorMessage from '../../components/ErrorMessage'; 
 
 const UserManage = () => {
   const [users, setUsers] = useState([]);
@@ -12,13 +13,17 @@ const UserManage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
+  const [createError, setCreateError] = useState(null);
+  const [editError, setEditError] = useState(null);
 
   const loadUsers = async () => {
     try {
       const userData = await getAllUser();
       setUsers(userData);
+      setError(null);
     } catch (err) {
-      setError(err.message || "Failed to load users.");
+      setError("Failed to load users: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -32,10 +37,11 @@ const UserManage = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUserById(userId);
-        loadUsers(); 
+        loadUsers();
         alert("User deleted successfully!");
+        setDeleteError(null);
       } catch (error) {
-        alert("Error deleting user: " + error.message);
+        setDeleteError("Failed to delete user: " + error.message);
       }
     }
   };
@@ -43,18 +49,30 @@ const UserManage = () => {
   const handleEdit = (user) => {
     setSelectedUser(user);
     setShowEditForm(true);
+    setEditError(null);
   };
 
   const handleCreateSuccess = (newUser) => {
     setShowCreateForm(false);
-    loadUsers(); 
+    loadUsers();
     alert("User created successfully!");
+    setCreateError(null);
   };
+
+    const handleCreateClose = () => {
+        setShowCreateForm(false);
+        setCreateError(null);
+    }
+      const handleEditClose = () => {
+        setShowEditForm(false);
+        setEditError(null);
+    }
 
   const handleEditSuccess = (updatedUser) => {
     setShowEditForm(false);
-    loadUsers(); 
+    loadUsers();
     alert("User updated successfully");
+    setEditError(null);
   };
 
   if (loading) {
@@ -65,18 +83,11 @@ const UserManage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-red-500 text-xl">Error: {error}</div>
-      </div>
-    );
-  }
-
   return (
     <>
       <Header />
       <div className="flex-grow">
+        {error && <ErrorMessage message={error} />}
         <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">User Management</h1>
           <button
@@ -89,7 +100,8 @@ const UserManage = () => {
           {showCreateForm && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
               <div className="relative p-8 border w-full max-w-md shadow-lg rounded-xl bg-white">
-                <CreateUserForm onUserCreated={handleCreateSuccess} onClose={() => setShowCreateForm(false)} />
+                <CreateUserForm onUserCreated={handleCreateSuccess} onClose={handleCreateClose} setCreateError={setCreateError}/>
+                {createError && <ErrorMessage message={createError} />}
               </div>
             </div>
           )}
@@ -97,10 +109,13 @@ const UserManage = () => {
           {showEditForm && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
               <div className="relative p-8 border w-full max-w-md shadow-lg rounded-xl bg-white">
-                <EditUserForm user={selectedUser} onUserUpdated={handleEditSuccess} onClose={() => setShowEditForm(false)} />
+                <EditUserForm user={selectedUser} onUserUpdated={handleEditSuccess} onClose={handleEditClose} setEditError={setEditError}/>
+                {editError && <ErrorMessage message={editError} />}
               </div>
             </div>
           )}
+
+           {deleteError && <ErrorMessage message={deleteError} />}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {users.map((user) => (

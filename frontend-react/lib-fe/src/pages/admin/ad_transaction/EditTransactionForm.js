@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { editTransactionById } from '../../../apis/TransactionApi';
 
-const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose }) => {
+const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose, setCreateError }) => {
   const [userId, setUserId] = useState('');
   const [bookId, setBookId] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -28,7 +28,7 @@ const EditTransactionForm = ({ transaction, onTransactionUpdated, onClose }) => 
       onTransactionUpdated(updateTransaction);
       onClose();
     }catch(err){
-      setError(err.message || "Failed to update transaction.");
+      setCreateError("Failed to edit transaction: " + error.message);
     }
   };
 

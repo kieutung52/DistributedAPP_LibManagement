@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllTransaction } from '../../apis/TransactionApi';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
@@ -18,8 +19,9 @@ const Transaction = () => {
         const allTransactions = await getAllTransaction();
         const userTransactions = allTransactions.filter(t => t.userId === userId);
         setTransactions(userTransactions);
+        setError(null);
       } catch (err) {
-        setError(err.message || "Failed to load transactions.");
+        setError("Failed to load transactions: " + err.message);
       } finally {
         setLoading(false);
       }
@@ -32,59 +34,56 @@ const Transaction = () => {
     }
   }, [userId]);
 
-    const getStatusColorClass = (status) => {
+  const getStatusColorClass = (status) => {
     switch (status) {
-      case 'pending':
+      case 'PENDING':
         return 'bg-yellow-200 text-yellow-800';
-      case 'approved':
+      case 'ACCEPT':
         return 'bg-green-200 text-green-800';
-      case 'rejected':
+      case 'CANCELED':
         return 'bg-red-200 text-red-800';
-      case 'returned':
-        return 'bg-blue-200 text-blue-800';
       default:
         return 'bg-gray-200 text-gray-800';
     }
   };
+
   const getBorrowStatusColorClass = (borrowStatus) => {
-        switch (borrowStatus) {
-            case 'pending':
-                return 'bg-yellow-200 text-yellow-800'; 
-            case 'borrowing':
-                return 'bg-blue-200 text-blue-800';   
-            case 'returned':
-                return 'bg-green-200 text-green-800';  
-            case 'overdue':
-                return 'bg-red-200 text-red-800';    
-            case 'cancelled':
-                return 'bg-gray-200 text-gray-800';   
-            default:
-                return 'bg-gray-100 text-gray-700';
-        }
-    };
-
+    switch (borrowStatus) {
+      case 'NONE':
+        return 'bg-yellow-200 text-yellow-800';
+      case 'ON_TIME':
+        return 'bg-blue-200 text-blue-800';
+      case 'DUE':
+        return 'bg-green-200 text-green-800';
+      case 'OVER_DUE':
+        return 'bg-red-200 text-red-800';
+      case 'RETURNED':
+        return 'bg-gray-200 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-    </div>;
-  }
-
-  if (error) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="text-red-500 text-xl">Error: {error}</div>
-        </div>;
+      </div>
+    );
   }
 
   if (!userId) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="text-red-500 text-xl"> User is not logged </div>
-        </div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+          <ErrorMessage message="User is not logged in."/>
+      </div>
+    );
   }
 
   return (
     <>
       <Header />
       <div className="flex-grow">
+        {error && <ErrorMessage message={error} />}
         <div className="container mx-auto p-4">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">My Transactions</h1>
           <div className="grid grid-cols-1 gap-4">
@@ -97,7 +96,7 @@ const Transaction = () => {
                   Status: <span className={`px-2 py-1 rounded ${getStatusColorClass(transaction.status)}`}>{transaction.status}</span>
                 </p>
                 <p className="text-gray-700">
-                   Borrow Status: <span className={`px-2 py-1 rounded ${getBorrowStatusColorClass(transaction.borrowStatus)}`}>{transaction.borrowStatus}</span>
+                  Borrow Status: <span className={`px-2 py-1 rounded ${getBorrowStatusColorClass(transaction.borrowStatus)}`}>{transaction.borrowStatus}</span>
                 </p>
               </div>
             ))}
